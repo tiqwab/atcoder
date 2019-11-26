@@ -17,7 +17,7 @@ bool cond(const vector<int> &xs, int ind, int val) {
 int binary_search(const vector<int> &xs, int val) {
     int left = -1, right = (int) xs.size(), mid;
     while (right - left > 1) {
-        mid = (left + right) / 2;
+        mid = left + (right - left) / 2;
         if (cond(xs, mid, val)) right = mid;
         else left = mid;
     }

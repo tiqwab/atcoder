@@ -70,6 +70,8 @@ ll solve(const int orig_bits, const int last_v, const int V, const int E, const 
 
 /*
  * https://qiita.com/drken/items/7c6ff2aa4d8fce1c9361#%E5%B7%A1%E5%9B%9E%E3%82%BB%E3%83%BC%E3%83%AB%E3%82%B9%E3%83%9E%E3%83%B3%E5%95%8F%E9%A1%8C
+ *
+ * This can be also solved by Warshall–Floyd Algorithm.
  */
 int main(void) {
     int V, E;

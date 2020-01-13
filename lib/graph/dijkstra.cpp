@@ -1,18 +1,11 @@
 #include <iostream>
 #include <queue>
 
-/*
- * ref. https://ja.wikipedia.org/wiki/%E3%83%80%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%88%E3%83%A9%E6%B3%95
- */
-
 using namespace std;
 
-#define MAX_V 100000
-#define INF 1000000001
-
 typedef long long ll;
-typedef int PrevList[MAX_V];
-typedef ll DistanceList[MAX_V];
+
+const int INF = 1001001001;
 
 class Elem {
     public:
@@ -28,83 +21,91 @@ class Elem {
         }
 };
 
-typedef vector<vector<Elem> > Edges;
-
-typedef priority_queue<Elem, vector<Elem>, greater<Elem> > PriorityQueue;
+typedef vector<vector<Elem>> Edges;
+Edges edges;
 
 /*
- * n: size of vertices (assume that names of vertices are 0, 1, ..., n-1)
- * start: start vertex
+ * ref. https://ja.wikipedia.org/wiki/%E3%83%80%E3%82%A4%E3%82%AF%E3%82%B9%E3%83%88%E3%83%A9%E6%B3%95
+ *
+ * usage:
+ *
+ * int main(void) {
+ *     int V, E, start; // vertices, edges, start
+ *     cin >> V >> E >> start;
+ *     Graph g(V, E, edges);
+ *     g.dijkstra(start);
+ *     // do something with d.d_list and d.prev_list
+ * }
  */
-void dijkstra(const int n, const int start, const Edges &edges,
-        PrevList &prev_list, DistanceList &d_list, PriorityQueue &queue) {
-    // Initialization
-    for (int i = 0; i < n; i++) {
-        if (i == start) {
-            d_list[i] = 0;
-        } else {
-            d_list[i] = INF;
+class Graph {
+    public:
+        const int V; // num of vertices
+        const int INF;
+        const Edges &edges;
+        vector<int> prev_list; // previous vertex on the shortest path from start (calculated after dijkstra())
+        vector<ll> d_list; // distance from start (calculated after dijkstra())
+
+        Graph(int v, int inf, Edges &edges) : V(v), INF(inf), edges(edges) {
         }
 
-        prev_list[i] = -1;
+        void dijkstra(const int start) {
+            priority_queue<Elem, vector<Elem>, greater<Elem>> q;
 
-        Elem elem;
-        elem.vertex = i;
-        elem.distance = d_list[i];
-        queue.push(elem);
-    }
+            init();
+            d_list[start] = 0;
+            for (int i = 0; i < V; i++) {
+                q.push({i, d_list[i]});
+            }
 
-    while (queue.size() > 0) {
-        Elem elem = queue.top();
-        queue.pop();
+            while (q.size() > 0) {
+                Elem elem = q.top();
+                q.pop();
 
-        for (int i = 0; i < edges[elem.vertex].size(); i++) {
-            Elem next = edges[elem.vertex][i];
-            ll alt = d_list[elem.vertex] + next.distance;
-            if (d_list[next.vertex] > alt) {
-                d_list[next.vertex] = alt;
-                prev_list[next.vertex] = elem.vertex;
+                for (int i = 0; i < (int) edges[elem.vertex].size(); i++) {
+                    Elem next = edges[elem.vertex][i];
+                    ll alt = d_list[elem.vertex] + next.distance;
+                    if (d_list[next.vertex] > alt) {
+                        d_list[next.vertex] = alt;
+                        prev_list[next.vertex] = elem.vertex;
 
-                Elem e;
-                e.vertex = next.vertex;
-                e.distance = d_list[next.vertex];
-                queue.push(e);
+                        Elem e;
+                        e.vertex = next.vertex;
+                        e.distance = d_list[next.vertex];
+                        q.push(e);
+                    }
+                }
             }
         }
-    }
-}
 
-Edges edges;
-PrevList prev_list;
-DistanceList d_list;
+    private:
+        void init() {
+            prev_list.clear();
+            prev_list.resize(V, -1);
+
+            d_list.clear();
+            d_list.resize(V, INF);
+        }
+};
 
 // ref. http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=GRL_1_A&lang=jp
 int main(void) {
-    PriorityQueue q;
+    int V, E, r; // vertices, edges, start
+    cin >> V >> E >> r;
 
-    int v, e, r;
+    edges.resize(V, vector<Elem>());
 
-    cin >> v >> e >> r;
-
-    for (int i = 0; i < v; i++) {
-        edges.push_back(vector<Elem>());
-    }
-
-    for (int i = 0; i < e; i++) {
+    for (int i = 0; i < E; i++) {
         int s, t, d;
-        Elem e;
         cin >> s >> t >> d;
-
-        e.vertex = t;
-        e.distance = d;
-        edges[s].push_back(e);
+        edges[s].push_back({t, d});
     }
 
-    dijkstra(v, r, edges, prev_list, d_list, q);
+    Graph g(V, INF, edges);
+    g.dijkstra(r);
 
-    for (int i = 0; i < v; i++) {
-        if (d_list[i] != INF) {
-            cout << d_list[i] << endl;
+    for (int i = 0; i < V; i++) {
+        if (g.d_list[i] != INF) {
+            cout << g.d_list[i] << endl;
         } else {
             cout << "INF" << endl;
         }

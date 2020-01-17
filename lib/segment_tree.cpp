@@ -29,17 +29,19 @@ inline bool chmin(T &a, T b) {
 const int INF = (int) ((1LL << 31) - 1);
 
 // ref. arihon 3-3
+// E: type of data, R: type of query result
+template<typename E, typename R>
 class SegmentTree {
     public:
-        SegmentTree(const int _n, int (*f)(int, int)): f(f) {
+        SegmentTree(const int _n, const E inf, R (*f)(E, E)): f(f), inf(inf) {
             n = 1;
             while (n < _n) n *= 2;
-            data.resize(2 * n, INF);
+            data.resize(2 * n, inf);
         }
 
         // update data[k] with a
         // time complexity: O(n)
-        void update(int k, int a) {
+        void update(int k, E a) {
             k += n - 1;
             data[k] = a;
             while (k > 0) {
@@ -50,16 +52,17 @@ class SegmentTree {
 
         // query value from [a, b)
         // // time complexity: O(n)
-        int query(int a, int b) {
+        R query(int a, int b) {
             return query(a, b, 0, 0, n);
         }
 
     private:
         int n;
-        int (*f)(int, int);
-        vector<int> data;
+        R (*f)(E, E);
+        const E inf;
+        vector<E> data;
 
-        int query(int a, int b, int k, int l, int r) {
+        R query(int a, int b, int k, int l, int r) {
             // if [a, b) intersect [l, r) = empty
             if (r <= a || b <= l) {
                 return INF;
@@ -69,8 +72,8 @@ class SegmentTree {
             if (a <= l && r <= b) {
                 return data[k];
             } else {
-                int vl = query(a, b, k * 2 + 1, l, (l + r) / 2);
-                int vr = query(a, b, k * 2 + 2, (l + r) / 2, r);
+                R vl = query(a, b, k * 2 + 1, l, (l + r) / 2);
+                R vr = query(a, b, k * 2 + 2, (l + r) / 2, r);
                 return min(vl, vr);
             }
         }
@@ -86,7 +89,7 @@ int main(void) {
     auto f = [](int x, int y) {
         return min(x, y);
     };
-    SegmentTree *st = new SegmentTree(n, f);
+    SegmentTree<int, int> *st = new SegmentTree<int, int>(n, INF, f);
 
     for (int i = 0; i < q; i++) {
         int com, x, y;

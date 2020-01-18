@@ -65,7 +65,7 @@ class SegmentTree {
         R query(int a, int b, int k, int l, int r) {
             // if [a, b) intersect [l, r) = empty
             if (r <= a || b <= l) {
-                return INF;
+                return inf;
             }
 
             // if [a, b) includes [l, r)
@@ -74,7 +74,7 @@ class SegmentTree {
             } else {
                 R vl = query(a, b, k * 2 + 1, l, (l + r) / 2);
                 R vr = query(a, b, k * 2 + 2, (l + r) / 2, r);
-                return min(vl, vr);
+                return (*f)(vl, vr);
             }
         }
 };

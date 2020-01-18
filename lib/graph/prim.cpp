@@ -35,7 +35,7 @@ typedef priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(compare)
 vector<vector<pair<int, int>>> edges;
 vector<bool> visited;
 
-ll solve(PriorityQueue q, const int V, const int E) {
+ll solve(PriorityQueue q) {
     ll acc = 0;
 
     while (!q.empty()) {
@@ -78,7 +78,7 @@ int main(void) {
         q.push(edges[0][i]);
     }
 
-    cout << solve(q, V, E) << endl;
+    cout << solve(q) << endl;
 
     return 0;
 }

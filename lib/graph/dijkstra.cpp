@@ -1,11 +1,13 @@
 #include <iostream>
 #include <queue>
 
+#include <limits.h>
+
 using namespace std;
 
 typedef long long ll;
 
-const int INF = 1001001001;
+const ll INF = LONG_LONG_MAX / 2;
 
 class Elem {
     public:
@@ -32,7 +34,7 @@ Edges edges;
  * int main(void) {
  *     int V, E, start; // vertices, edges, start
  *     cin >> V >> E >> start;
- *     Graph g(V, E, edges);
+ *     Graph g(V, INF, edges);
  *     g.dijkstra(start);
  *     // do something with d.d_list and d.prev_list
  * }
@@ -40,12 +42,12 @@ Edges edges;
 class Graph {
     public:
         const int V; // num of vertices
-        const int INF;
+        const ll INF;
         const Edges &edges;
         vector<int> prev_list; // previous vertex on the shortest path from start (calculated after dijkstra())
         vector<ll> d_list; // distance from start (calculated after dijkstra())
 
-        Graph(int v, int inf, Edges &edges) : V(v), INF(inf), edges(edges) {
+        Graph(int v, ll inf, Edges &edges) : V(v), INF(inf), edges(edges) {
         }
 
         void dijkstra(const int start) {

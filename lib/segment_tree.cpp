@@ -40,6 +40,7 @@ class SegmentTree {
         }
 
         // update data[k] with a
+        // 0-index, [0, _n) in other words
         // time complexity: O(n)
         void update(int k, E a) {
             k += n - 1;
@@ -51,7 +52,8 @@ class SegmentTree {
         }
 
         // query value from [a, b)
-        // // time complexity: O(n)
+        // 0-index, [0, _n) in other words
+        // time complexity: O(n)
         R query(int a, int b) {
             return query(a, b, 0, 0, n);
         }

@@ -33,6 +33,7 @@ class UnionFind {
         UnionFind(int n = 0): d(n, -1) {}
 
         // 0-index, [0, n) in other words
+        // Time complexity: O(a(n)) (a = inverse Achkermann function)
         int find(int x) {
             if (d[x] < 0) return x;
             return d[x] = find(d[x]);
@@ -40,6 +41,7 @@ class UnionFind {
 
         // Return false if x and y are alreday in the same group, otherwise return true.
         // 0-index, [0, n) in other words
+        // Time complexity: O(a(n)) (a = inverse Achkermann function)
         bool unite(int x, int y) {
             x = find(x);
             y = find(y);
@@ -51,11 +53,13 @@ class UnionFind {
         }
 
         // 0-index, [0, n) in other words
+        // Time complexity: O(a(n)) (a = inverse Achkermann function)
         bool same(int x, int y) {
             return find(x) == find(y);
         }
 
         // 0-index, [0, n) in other words
+        // Time complexity: O(1)
         int size(int x) {
             return -d[find(x)];
         }

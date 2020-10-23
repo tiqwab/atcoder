@@ -1,7 +1,9 @@
 #include <algorithm>
-#include <bitset>
 #include <cassert>
 #include <iostream>
+#include <map>
+#include <queue>
+#include <set>
 #include <vector>
 
 #include <limits.h>
@@ -28,15 +30,20 @@ inline bool chmin(T &a, T b) {
     return false;
 }
 
-const int MAX_V = 15;
+vector<int> xs;
+vector<int> ys;
+vector<int> zs;
+
+// edges1[i][j] is cost from i to j
+vector<vector<int>> edges1;
+
+const int MAX_V = 17;
 const ll INF = LONG_LONG_MAX / 2;
 
-typedef ll Edges[MAX_V][MAX_V];
-
-Edges edges;
 ll dp[(1 << MAX_V)][MAX_V];
 
-ll solve(const int orig_bits, const int current, const int start, const int V, const int E) {
+ll solve(const int orig_bits, const int current, const int start,
+        const int V, const vector<vector<int>> &edges) {
     if (dp[orig_bits][current] != -1) {
         return dp[orig_bits][current];
     }
@@ -56,7 +63,7 @@ ll solve(const int orig_bits, const int current, const int start, const int V, c
         if (edge_cost == INF) {
             continue;
         }
-        chmin(min, solve(l, i, start, V, E) + edge_cost);
+        chmin(min, solve(l, i, start, V, edges) + edge_cost);
         // cout << bitset<8>(l) << "," << current << "," << start << "," << i << "," << edge_cost << "," << min << endl;
     }
 
@@ -64,37 +71,45 @@ ll solve(const int orig_bits, const int current, const int start, const int V, c
     return dp[orig_bits][current];
 }
 
-/*
- * http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=DPL_2_A&lang=jp
- * https://dalekspritner.hatenablog.com/entry/2018/09/27/231030
- */
 int main(void) {
-    int V, E;
-    cin >> V >> E;
+    int N;
+    cin >> N;
 
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            edges[i][j] = INF;
+    xs.resize(N);
+    ys.resize(N);
+    zs.resize(N);
+    for (int i = 0; i < N; i++) {
+        cin >> xs[i] >> ys[i] >> zs[i];
+    }
+
+    edges1.resize(N, vector<int>(N, 0));
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            if (i == j) {
+                continue;
+            }
+            edges1[i][j] = abs(xs[j] - xs[i]) + abs(ys[j] - ys[i]) + max(0, zs[j] - zs[i]);
         }
     }
-    for (int i = 0; i < E; i++) {
-        int s, t, d;
-        cin >> s >> t >> d;
-        edges[s][t] = d;
+#ifdef DEBUG
+    printf("edges1: \n");
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            cout << edges1[i][j] << " ";
+        }
+        cout << endl;
     }
+    cout << endl;
+#endif
 
     for (int i = 0; i < (1 << MAX_V); i++) {
-        for (int j = 0; j < MAX_V; j++) {
+        for (int j = 0; j < N; j++) {
             dp[i][j] = -1;
         }
     }
 
-    ll ans = solve(0, 0, 0, V, E);
-    if (ans != INF) {
-        cout << ans << endl;
-    } else {
-        cout << "-1" << endl;
-    }
-    
+    ll ans = solve(0, 0, 0, N, edges1);
+    cout << ans << endl;
+
     return 0;
 }

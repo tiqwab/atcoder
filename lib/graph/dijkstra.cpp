@@ -51,6 +51,16 @@ class Graph {
         }
 
         void dijkstra(const int start) {
+            /* another way to define priority_queue with lambda */
+            // auto f = [](const pair<int, int>& one, const pair<int, int>& other) {
+            //     if (one.second != other.second) {
+            //         return one.second > other.second;
+            //     } else {
+            //         return one.first > other.first;
+            //     }
+            // };
+            // priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(f)> q(f);
+
             priority_queue<Elem, vector<Elem>, greater<Elem>> q;
 
             init();
